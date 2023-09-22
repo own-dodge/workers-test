@@ -1,26 +1,76 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <div class="form-block">
+      <button @click="isActiveForm = !isActiveForm" class="btn btn-table">Добавить</button>
+      <ModalComponent v-model:show="isActiveForm">
+        <FormComponent v-if="isActiveForm" @addPerson="addPerson" :grid-data-persons="gridDataPersons" />
+      </ModalComponent>
+    </div>
+    <TableComponent :table-columns-list="tableColumnsList" :grid-data-persons="gridDataPersons" />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FormComponent from './components/FormComponent.vue';
+import TableComponent from './components/TableComponent.vue';
+import ModalComponent from './components/ModalComponent.vue';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: { FormComponent, TableComponent, ModalComponent },
+  data() {
+    return {
+      tableColumnsList: ['Имя', 'Телефон'],
+      gridDataPersons: [
+        { name: 'Марина', tel: '+7 941 123 21 42', boss: '', employees: [] },
+        { name: 'Петр', tel: '+7 941 123 21 43', boss: '', employees: [] },
+        { name: 'Борис', tel: '+7 941 123 21 44', boss: '', employees: [] },
+      ],
+      isActiveForm: false,
+      inputName: null,
+      inputTel: null,
+    }
+  },
+  mounted() {
+    this.getGridDataPersons();
+  },
+  watch: {
+    gridDataPersons: {
+      handler(UpdatedGridDataPersons) {
+        localStorage.setItem('gridDataPersons', JSON.stringify(UpdatedGridDataPersons))
+      },
+      deep: true,
+    }
+  },
+  methods: {
+    addPerson(person) {
+      if (!person.boss) {
+        this.gridDataPersons.push(person);
+      } else {
+        this.gridDataPersons.find(el => el.name === person.boss).employees.push(person);
+      }
+      this.isActiveForm = !this.isActiveForm;
+    },
+    getGridDataPersons() {
+      const localGridDataPersons = localStorage.getItem('gridDataPersons');
+      if (localGridDataPersons) {
+        this.gridDataPersons = JSON.parse(localGridDataPersons);
+      }
+    },
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.form-block {
+  display: flex;
+  flex-direction: column;
+  max-width: 330px;
+}
+
+.btn-table {
+  margin-bottom: 30px;
+  max-width: 150px;
+  align-self: flex-end;
 }
 </style>
