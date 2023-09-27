@@ -6,14 +6,14 @@
         <FormComponent v-if="isActiveForm" @addPerson="addPerson" :grid-data-persons="gridDataPersons" />
       </ModalComponent>
     </div>
-    <TableComponent :table-columns-list="tableColumnsList" :grid-data-persons="gridDataPersons" />
+    <TableComponent @sortBy="sortBy(columnDir)" :table-columns-list="tableColumnsList" :grid-data-persons="gridDataPersons" />
   </div>
 </template>
 
 <script>
-import FormComponent from './components/FormComponent.vue';
-import TableComponent from './components/TableComponent.vue';
-import ModalComponent from './components/ModalComponent.vue';
+import FormComponent from '@/components/FormComponent.vue';
+import TableComponent from '@/components/TableComponent.vue';
+import ModalComponent from '@/components/ModalComponent.vue';
 
 export default {
   name: 'App',
@@ -27,8 +27,7 @@ export default {
         { name: 'Борис', tel: '+7 941 123 21 44', boss: '', employees: [] },
       ],
       isActiveForm: false,
-      inputName: null,
-      inputTel: null,
+      columnDir: false,
     }
   },
   mounted() {
@@ -47,6 +46,7 @@ export default {
       if (!person.boss) {
         this.gridDataPersons.push(person);
       } else {
+        this.gridDataPersons.push(person);
         this.gridDataPersons.find(el => el.name === person.boss).employees.push(person);
       }
       this.isActiveForm = !this.isActiveForm;
@@ -56,6 +56,13 @@ export default {
       if (localGridDataPersons) {
         this.gridDataPersons = JSON.parse(localGridDataPersons);
       }
+    },
+    sortBy(direction) {
+      this.columnDir = !this.columnDir;
+      this.gridDataPersons.sort((a, b) => {
+        if((!direction == false ? a.name < b.name : a.name > b.name))
+        return -1;
+      })
     },
   }
 }
