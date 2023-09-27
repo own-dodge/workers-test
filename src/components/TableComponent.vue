@@ -2,15 +2,14 @@
   <table>
     <thead>
       <tr>
-        <th v-for="tableName in tableColumnsList" @click="sortBy"
-          :key="tableName">
+        <th v-for="tableName in tableColumnsList" @click="sortBy" :key="tableName">
           {{ tableName }}
         </th>
       </tr>
     </thead>
     <tbody>
       <template v-for="(person, index) in gridDataPersons" :key="index">
-        <tr v-if="findPerson(person)">
+        <tr>
           <td v-for="(key, index) in Object.values(person).slice(0, 2)" :key="index">
             {{ key }}
           </td>
@@ -29,21 +28,12 @@
 
 <script>
 export default {
-  props: ['tableColumnsList', 'gridDataPersons'],
-  methods : {
+  props: ['tableColumnsList', 'gridDataPersons', 'addedPersons'],
+  methods: {
     sortBy(direction) {
       this.$emit('sortBy', direction)
     },
-    findPerson(person) {
-      this.gridDataPersons.forEach(element => {
-        element.employees.forEach((el) => {
-          if (el === person) {
-            return false
-          } else { return true }
-        }) 
-      });
-    }
-  }
+  },
 }
 </script>
 

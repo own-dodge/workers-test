@@ -1,12 +1,13 @@
 <template>
   <div class="container">
     <div class="form-block">
-      <button @click="isActiveForm = !isActiveForm" class="btn btn-table">Добавить</button>
+      <ButtonUI @click="isActiveForm = !isActiveForm" class="btn-table">Добавить</ButtonUI>
       <ModalComponent v-model:show="isActiveForm">
         <FormComponent v-if="isActiveForm" @addPerson="addPerson" :grid-data-persons="gridDataPersons" />
       </ModalComponent>
     </div>
-    <TableComponent @sortBy="sortBy(columnDir)" :table-columns-list="tableColumnsList" :grid-data-persons="gridDataPersons" />
+    <TableComponent @sortBy="sortBy(columnDir)" :table-columns-list="tableColumnsList"
+      :grid-data-persons="gridDataPersons" />
   </div>
 </template>
 
@@ -14,18 +15,20 @@
 import FormComponent from '@/components/FormComponent.vue';
 import TableComponent from '@/components/TableComponent.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
+import ButtonUI from '@/components/UI/ButtonUI.vue';
 
 export default {
   name: 'App',
-  components: { FormComponent, TableComponent, ModalComponent },
+  components: { FormComponent, TableComponent, ModalComponent, ButtonUI },
   data() {
     return {
       tableColumnsList: ['Имя', 'Телефон'],
-      gridDataPersons: [
-        { name: 'Марина', tel: '+7 941 123 21 42', boss: '', employees: [] },
-        { name: 'Петр', tel: '+7 941 123 21 43', boss: '', employees: [] },
-        { name: 'Борис', tel: '+7 941 123 21 44', boss: '', employees: [] },
-      ],
+      gridDataPersons:
+        [
+          { name: 'Марина', tel: '+7 941 123 21 42', boss: '', employees: [] },
+          { name: 'Петр', tel: '+7 941 123 21 43', boss: '', employees: [] },
+          { name: 'Борис', tel: '+7 941 123 21 44', boss: '', employees: [] },
+        ],
       isActiveForm: false,
       columnDir: false,
     }
@@ -43,11 +46,13 @@ export default {
   },
   methods: {
     addPerson(person) {
-      if (!person.boss) {
-        this.gridDataPersons.push(person);
-      } else {
-        this.gridDataPersons.push(person);
-        this.gridDataPersons.find(el => el.name === person.boss).employees.push(person);
+      if (!this.isPersonExists(person)) {
+        if (this.hasBoss(person)) {
+          this.gridDataPersons.find(el => el.name === person.boss).employees.push(person);
+        }
+        else {
+          this.gridDataPersons.push(person);
+        }
       }
       this.isActiveForm = !this.isActiveForm;
     },
@@ -60,10 +65,21 @@ export default {
     sortBy(direction) {
       this.columnDir = !this.columnDir;
       this.gridDataPersons.sort((a, b) => {
-        if((!direction == false ? a.name < b.name : a.name > b.name))
-        return -1;
+        if ((!direction == false ? a.name < b.name : a.name > b.name))
+          return -1;
       })
     },
+    isPersonExists(person) {
+      let res = this.gridDataPersons.some((pers) => {
+        return pers.employees.some(emp => {
+          return emp.name === person.name;
+        })
+      });
+      return res;
+    },
+    hasBoss(person) {
+      return person.boss !== '' && person.boss !== null;
+    }
   }
 }
 </script>

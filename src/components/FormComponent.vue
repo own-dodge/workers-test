@@ -7,12 +7,15 @@
       {{ person.name }}
       </option>
     </select>
-    <button class="btn btn-form" type="submit">Сохранить</button>
+    <ButtonUI class="btn-form" type="submit">Сохранить</ButtonUI>
   </form>
 </template>
 
 <script>
+import ButtonUI from '@/components/UI/ButtonUI.vue';
+
 export default {
+  components: { ButtonUI },
   props: ['gridDataPersons'],
   data() {
     return {
@@ -33,8 +36,8 @@ export default {
         boss: null,
         employees: []
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
