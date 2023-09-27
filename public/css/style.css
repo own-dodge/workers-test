@@ -7,17 +7,3 @@ body {
 .container {
   padding: 50px;
 }
-
-.btn {
-  padding: 15px;
-  background-color: #42b983;
-  border: 1px solid #42b983;
-  border-radius: 10px;
-  color: #fff;
-  cursor: pointer;
-  transition: ease-in-out .3s;
-}
-
-.btn:hover {
-  opacity: 0.8;
-}

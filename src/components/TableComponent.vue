@@ -28,7 +28,7 @@
 
 <script>
 export default {
-  props: ['tableColumnsList', 'gridDataPersons', 'addedPersons'],
+  props: ['tableColumnsList', 'gridDataPersons'],
   methods: {
     sortBy(direction) {
       this.$emit('sortBy', direction)
